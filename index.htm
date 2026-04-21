@@ -206,29 +206,38 @@ function nextQuestion() {
     }
 }
 
+<script>
 function showFinal() {
     questionEl.innerHTML = "";
     buttonsEl.innerHTML = "";
 
     const finalText = document.createElement("div");
     finalText.classList.add("final-text");
-    finalText.innerHTML = "Ну вот… 💘<br>Теперь ты точно не случайный человек 😉";
+
+    finalText.innerHTML = `
+    Илья… 💫<br><br>
+    Кажется, ты только что прошёл не просто тест 😏<br><br>
+    Теперь у меня к тебе маленький вопрос...<br><br>
+    <b>ты напишешь мне первым или мне продолжить эту игру? 😉</b>
+    `;
 
     document.getElementById("game").appendChild(finalText);
 
-    // сердца 💖
-    for (let i = 0; i < 80; i++) {
+    // 💖 красивые сердечки
+    for (let i = 0; i < 100; i++) {
         const heart = document.createElement("div");
         heart.classList.add("heart");
-        heart.innerHTML = "💖";
+        heart.innerHTML = Math.random() > 0.5 ? "💖" : "✨";
         heart.style.left = Math.random() * 100 + "vw";
-        heart.style.fontSize = (Math.random() * 20 + 15) + "px";
+        heart.style.fontSize = (Math.random() * 25 + 15) + "px";
         heart.style.animationDuration = (Math.random() * 3 + 2) + "s";
         document.body.appendChild(heart);
         setTimeout(() => heart.remove(), 5000);
     }
+
+    // 🎵 лёгкий "вау" эффект — вибрация (если с телефона)
+    if (navigator.vibrate) {
+        navigator.vibrate([100, 50, 100]);
+    }
 }
 </script>
-
-</body>
-</html>
