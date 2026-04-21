@@ -14,10 +14,10 @@ body {
     align-items: center;
     flex-direction: column;
     font-family: 'Comic Sans MS', cursive;
-    background-size: contain;
+    background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    transition: background 0.8s ease-in-out;
+    transition: 0.8s;
 }
 
 body::before {
@@ -33,14 +33,11 @@ body::before {
     padding: 35px;
     border-radius: 25px;
     text-align: center;
-    box-shadow: 0 0 30px rgba(0,0,0,0.2);
     z-index: 1;
     max-width: 500px;
 }
 
-h1 {
-    color: #ff4d6d;
-}
+h1 { color: #ff4d6d; }
 
 button {
     padding: 14px 25px;
@@ -53,19 +50,17 @@ button {
 }
 
 .correct {
-    background-color: #ff4d6d;
+    background: #ff4d6d;
     color: white;
 }
 
 .wrong {
-    background-color: white;
+    background: white;
     color: #ff4d6d;
     position: relative;
 }
 
-button:hover {
-    transform: scale(1.1);
-}
+button:hover { transform: scale(1.1); }
 
 #game { display: none; }
 
@@ -78,18 +73,11 @@ button:hover {
 .heart {
     position: fixed;
     animation: float 4s linear infinite;
-    z-index: 2;
 }
 
 @keyframes float {
-    0% { transform: translateY(0); opacity: 1;}
-    100% { transform: translateY(-100vh); opacity: 0;}
-}
-
-.typing {
-    font-size: 20px;
-    color: #555;
-    margin-top: 15px;
+    0% { transform: translateY(0); opacity:1; }
+    100% { transform: translateY(-100vh); opacity:0; }
 }
 </style>
 </head>
@@ -97,8 +85,8 @@ button:hover {
 <body>
 
 <div id="startScreen" class="overlay">
-    <h1>Илья… у меня для тебя кое-что есть 😏</h1>
-    <button onclick="startGame()">Открыть 👀</button>
+    <h1>Илья… у меня кое-что есть 😏</h1>
+    <button onclick="startGame()">Открыть</button>
 </div>
 
 <div id="game" class="overlay">
@@ -108,7 +96,12 @@ button:hover {
 
 <script>
 
-// 🔥 стабильные гифки
+let currentQuestion = 0;
+
+let flirt = 0;
+let humor = 0;
+let chill = 0;
+
 const backgrounds = [
 "https://media.tenor.com/7cAOc2fKOcEAAAAM/adventure-time.gif",
 "https://media.tenor.com/dStJVtPNiTUAAAAM/jake.gif",
@@ -122,133 +115,118 @@ const backgrounds = [
 "https://media.tenor.com/26xBvQa5dyU3ADkJ6AAAAM/dance.gif"
 ];
 
-const funnyPhrases = [
-"Не туда 😏",
-"Попробуй ещё 😉",
-"Я запомню это 😌",
-"Ммм, мимо 😄",
-"Ты рискуешь 😏",
-"Почти 😄",
-"Серьёзно? 😏",
-"Хитрый ход 😌",
-"Не угадал 😜",
-"Я ожидала другого 😉",
-"Ещё шанс 😏",
-"Ну-ну 😄",
-"Ты меня проверяешь? 😏",
-"Я же вижу 😌",
-"Не прокатило 😉",
-"Ты специально? 😄",
-"Я так и думала 😏",
-"Мило, но нет 😌",
-"Почти убедил 😄",
-"Хорошая попытка 😉"
+const funny = [
+"Не туда 😏","Попробуй ещё 😉","Мимо 😄","Я запомню 😌",
+"Ты рискуешь 😏","Хитро 😄","Почти 😉","Не-а 😏"
 ];
 
-// 💘 интрига + флирт
 const questions = [
-{ text: "Если я сейчас рядом… ты бы что сделал? 😏", answers: ["Стал бы ближе 😉", "Сделал вид, что занят 😄"] },
-{ text: "Ты любишь, когда между людьми есть искра? ⚡", answers: ["Очень 😏", "Я спокойный 😄"] },
-{ text: "Что интереснее: слова или взгляд? 👀", answers: ["Взгляд… 😏", "Слова 😄"] },
-{ text: "Ты умеешь делать первый шаг? 😉", answers: ["Иногда да 😌", "Жду знака 😄"] },
-{ text: "Если становится немного неловко…", answers: ["Это даже интересно 😏", "Я отступаю 😄"] },
-{ text: "Ты веришь в «не случайные» знакомства? 💫", answers: ["Да 😌", "Иногда 😄"] },
-{ text: "Если я немного флиртую…", answers: ["Я тебя ухххх😉", "Сделаю вид что не понял 😄"] },
-{ text: "Ты больше про игру или серьёзность? 🎭", answers: ["Люблю игру 😏", "Я серьёзный 😄"] },
-{ text: "Ты умеешь удивлять? 😌", answers: ["Да 😉", "Стараюсь 😄"] },
-{ text: "Если станет интересно…", answers: ["Я продолжу 😏", "Посмотрю 😄"] },
-{ text: "Ты любишь риск? 😏", answers: ["Иногда 😌", "Не очень 😄"] },
-{ text: "Что сильнее цепляет? 😌", answers: ["Атмосфера 😏", "Слова 😄"] },
-{ text: "Ты бы захотел узнать меня лучше? 👀", answers: ["Да 😉", "Возможно 😄"] },
-{ text: "Если я скажу «мне с тобой интересно»…", answers: ["Я продолжу 😏", "Улыбнусь 😄"] },
-{ text: "И последний вопрос… ты чувствуешь это? 😏", answers: ["Да… 😉", "Может быть 😄"] }
+{ text:"Если я рядом — ты бы… 😏", answers:["Подошёл ближе 😉","Сделал вид что занят 😄"] },
+{ text:"Ты любишь лёгкое напряжение между людьми? 👀", answers:["Да 😏","Нет 😄"] },
+{ text:"Что сильнее — взгляд или слова? 😌", answers:["Взгляд 😏","Слова 😄"] },
+{ text:"Ты умеешь делать первый шаг? 😉", answers:["Иногда 😌","Редко 😄"] },
+{ text:"Если становится интересно…", answers:["Продолжаю 😏","Смотрю со стороны 😄"] },
+{ text:"Ты веришь в совпадения? 💭", answers:["Да 😌","Не всегда 😄"] },
+{ text:"Флирт — это…", answers:["Игра 😏","Шутка 😄"] },
+{ text:"Ты любишь риск? 😏", answers:["Иногда 😌","Нет 😄"] },
+{ text:"Что цепляет больше?", answers:["Атмосфера 😏","Логика 😄"] },
+{ text:"Ты бы продолжил этот разговор? 👀", answers:["Да 😉","Не уверен 😄"] }
 ];
 
-let currentQuestion = 0;
-const questionEl = document.getElementById("question");
-const buttonsEl = document.getElementById("buttons");
+const q = document.getElementById("question");
+const b = document.getElementById("buttons");
 
-function changeBackground() {
-    document.body.style.background =
-    `url("${backgrounds[currentQuestion]}") center/contain no-repeat fixed`;
+function startGame(){
+document.getElementById("startScreen").style.display="none";
+document.getElementById("game").style.display="block";
+next();
 }
 
-function startGame() {
-    document.getElementById("startScreen").style.display = "none";
-    document.getElementById("game").style.display = "block";
-    changeBackground();
-    showQuestion();
+function bg(){
+document.body.style.background=`url("${backgrounds[currentQuestion]}") center/cover no-repeat`;
 }
 
-function showQuestion() {
-    buttonsEl.innerHTML = "";
-    questionEl.innerText = questions[currentQuestion].text;
-
-    questions[currentQuestion].answers.forEach((answer, index) => {
-        const btn = document.createElement("button");
-        btn.innerText = answer;
-
-        if (index === 0) {
-            btn.classList.add("correct");
-            btn.onclick = nextQuestion;
-        } else {
-            btn.classList.add("wrong");
-            btn.onmouseover = () => {
-                btn.style.position = "absolute";
-                btn.style.left = Math.random()*80 + "%";
-                btn.style.top = Math.random()*80 + "%";
-                btn.innerText = funnyPhrases[Math.floor(Math.random()*funnyPhrases.length)];
-            };
-        }
-
-        buttonsEl.appendChild(btn);
-    });
+function next(){
+if(currentQuestion<questions.length){
+bg();
+show();
+}else{
+final();
+}
 }
 
-function nextQuestion() {
-    currentQuestion++;
-    if (currentQuestion < questions.length) {
-        changeBackground();
-        showQuestion();
-    } else {
-        showFinal();
-    }
+function show(){
+b.innerHTML="";
+q.innerText=questions[currentQuestion].text;
+
+questions[currentQuestion].answers.forEach((a,i)=>{
+let btn=document.createElement("button");
+btn.innerText=a;
+
+if(i===0){
+btn.className="correct";
+btn.onclick=()=>{
+flirt++;
+currentQuestion++;
+next();
+};
+}else{
+btn.className="wrong";
+btn.onmouseover=()=>{
+humor++;
+btn.style.position="absolute";
+btn.style.left=Math.random()*80+"%";
+btn.style.top=Math.random()*80+"%";
+btn.innerText=funny[Math.floor(Math.random()*funny.length)];
+};
 }
 
-// 💥 ФИНАЛ
-function showFinal() {
-    questionEl.innerHTML = "";
-    buttonsEl.innerHTML = "";
-
-    const finalText = document.createElement("div");
-    finalText.classList.add("final-text");
-
-    finalText.innerHTML = `
-    Илья… 💘<br><br>
-    Кажется, это было не просто так 😏<br><br>
-    <b>Напишешь мне первым… или мне продолжить? 😉</b>
-    <br><br>
-    <button onclick="goToChat()">Написать мне 💬</button>
-    <div class="typing">печатает сообщение…</div>
-    `;
-
-    document.getElementById("game").appendChild(finalText);
-
-    // 💖 анимация
-    for (let i = 0; i < 100; i++) {
-        const heart = document.createElement("div");
-        heart.classList.add("heart");
-        heart.innerHTML = Math.random()>0.5 ? "💖":"✨";
-        heart.style.left = Math.random()*100 + "vw";
-        heart.style.fontSize = (Math.random()*20+15)+"px";
-        document.body.appendChild(heart);
-        setTimeout(()=>heart.remove(),5000);
-    }
+b.appendChild(btn);
+});
 }
 
-// 👉 ВСТАВЬ СЮДА СВОЙ ЮЗЕР
-function goToChat(){
-    window.open("https://t.me/@n1kas_sk","_blank");
+function final(){
+q.innerHTML="";
+b.innerHTML="";
+
+document.body.style.background="url('https://media.tenor.com/3o6Zt481isNVuQI1l6AAAAM/stars.gif') center/cover";
+
+let text="";
+
+if(flirt>=5){
+text=`Илья… 😏<br><br>
+ты явно не просто нажимал кнопки…<br>
+ты играл как будто знал, что это про тебя 💭<br><br>
+<b>и это немного слишком интересно 😉</b>`;
+}
+else if(humor>flirt){
+text=`Илья… 😄<br><br>
+ты больше смеялся, чем думал 😏<br>
+и это даже приятно 💭<br><br>
+<b>с тобой явно не скучно 😉</b>`;
+}
+else{
+text=`Илья… 😌<br><br>
+ты спокойный и внимательный…<br>
+и это тоже цепляет 💭<br><br>
+<b>такие люди раскрываются позже 😉</b>`;
+}
+
+let d=document.createElement("div");
+d.className="final-text";
+d.innerHTML=text;
+
+document.getElementById("game").appendChild(d);
+
+for(let i=0;i<60;i++){
+let h=document.createElement("div");
+h.className="heart";
+h.innerHTML=Math.random()>0.5?"💖":"✨";
+h.style.left=Math.random()*100+"vw";
+h.style.fontSize=(10+Math.random()*20)+"px";
+document.body.appendChild(h);
+setTimeout(()=>h.remove(),5000);
+}
 }
 
 </script>
