@@ -84,7 +84,6 @@ button:hover {
     100% { transform: translateY(-100vh); opacity: 0;}
 }
 
-/* 💖 pulse для сердца */
 @keyframes pulse {
     0% { transform: scale(1); }
     50% { transform: scale(1.15); }
@@ -113,7 +112,6 @@ button:hover {
 
 <script>
 
-// фон
 const backgrounds = [
 "https://media.tenor.com/7cAOc2fKOcEAAAAM/adventure-time.gif",
 "https://media.tenor.com/dStJVtPNiTUAAAAM/jake.gif",
@@ -146,13 +144,13 @@ const funnyPhrases = [
 ];
 
 const questions = [
-{ text: "Если я была бы сейчас рядом… что бы ты сделал? 😏", answers: ["Стал бы ближе 😉", "Пристал,и снял одежду 😄"] },
+{ text: "Если я была бы сейчас рядом… что бы ты сделал? 😏", answers: ["Стал бы ближе 😉", "Пристану и сорву с тебя одежду 😄"] },
 { text: "Ты любишь, когда между людьми есть искра? ⚡", answers: ["Очень 😏", "Я спокойный 😄"] },
 { text: "Что интереснее: слова или взгляд? 👀", answers: ["Взгляд… 😏", "Слова 😄"] },
 { text: "Ты умеешь делать первый шаг? 😉", answers: ["Иногда да 😌", "Жду знака 😄"] },
 { text: "Если становится немного неловко…", answers: ["Это даже интересно 😏", "Я отступаю 😄"] },
 { text: "Ты веришь в «не случайные» знакомства? 💫", answers: ["Да 😌", "Иногда 😄"] },
-{ text: "Если я немного флиртую…", answers: ["Я тебя ухххх😉", "Сделаю вид что не понял 😄"] },
+{ text: "Если я немного флиртую…", answers: ["Я тебя покусаю 😉", "Сделаю вид что не понял 😄"] },
 { text: "Ты больше про игру или серьёзность? 🎭", answers: ["Люблю игру 😏", "Я серьёзный 😄"] },
 { text: "Ты умеешь удивлять? 😌", answers: ["Да 😉", "Стараюсь 😄"] },
 { text: "Если станет интересно…", answers: ["Я продолжу 😏", "Посмотрю 😄"] },
@@ -226,9 +224,7 @@ const wrap = document.createElement("div");
 wrap.className="final-text";
 
 wrap.innerHTML=`
-<div style="font-size:130px;color:#ff4d6d;animation:pulse 1.5s infinite;">
-❤
-</div>
+<div style="font-size:130px;color:#ff4d6d;animation:pulse 1.5s infinite;">❤</div>
 
 <div style="margin-top:-10px;font-size:20px;line-height:1.4;">
 
