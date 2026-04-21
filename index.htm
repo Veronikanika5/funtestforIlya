@@ -1,1 +1,221 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Небольшой тест для Ильи</title>
 
+<style>
+body {
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-family: 'Comic Sans MS', cursive;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: background 0.8s ease-in-out;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.25);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.overlay {
+    background: rgba(255,255,255,0.9);
+    padding: 35px;
+    border-radius: 25px;
+    text-align: center;
+    animation: fadeIn 1s ease;
+    box-shadow: 0 0 30px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+h1 {
+    color: #ff6f61;
+    animation: slideIn 0.8s ease;
+}
+
+button {
+    padding: 15px 30px;
+    font-size: 18px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    margin: 10px;
+    transition: 0.3s;
+}
+
+.correct {
+    background-color: #ff6f61;
+    color: white;
+}
+
+.wrong {
+    background-color: white;
+    color: #ff6f61;
+    position: relative;
+}
+
+button:hover {
+    transform: scale(1.1);
+}
+
+@keyframes fadeIn {
+    from {opacity:0;}
+    to {opacity:1;}
+}
+
+@keyframes slideIn {
+    from {transform: translateY(-20px); opacity:0;}
+    to {transform: translateY(0); opacity:1;}
+}
+
+#game {
+    display: none;
+}
+
+.final-text {
+    color: #ff6f61;
+    font-size: 32px;
+    font-weight: bold;
+    text-shadow: 0 0 15px #fff;
+    animation: pop 1s ease forwards;
+    opacity: 0;
+}
+
+@keyframes pop {
+    0% { transform: scale(0.5); opacity: 0; }
+    60% { transform: scale(1.1); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+}
+</style>
+</head>
+
+<body>
+
+<div id="startScreen" class="overlay">
+    <h1>Илья, у меня тут маленький тест для тебя 😏</h1>
+    <button onclick="startGame()">Ладно, заинтриговала 👀</button>
+</div>
+
+<div id="game" class="overlay">
+    <h1 id="question"></h1>
+    <div id="buttons"></div>
+</div>
+
+<script>
+const backgrounds = [
+"https://media.giphy.com/media/26ufdipQqU2lhNA4g/giphy.gif",
+"https://media.giphy.com/media/3o7btPCcdNniyf0ArS/giphy.gif",
+"https://media.giphy.com/media/l0HlBO7eyXzSZkJri/giphy.gif",
+"https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif",
+"https://media.giphy.com/media/xT0xeJpnrWC4XWblEk/giphy.gif",
+"https://media.giphy.com/media/26xBukhv7nY7p7c7e/giphy.gif",
+"https://media.giphy.com/media/l4FGuhL4U2WyjdkaY/giphy.gif",
+"https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif",
+"https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif",
+"https://media.giphy.com/media/3o6Zt481isNVuQI1l6/giphy.gif"
+];
+
+const funnyPhrases = [
+"Не-не 😏",
+"Ты уверен? 😄",
+"Мимо, но мило 😂",
+"Попробуй ещё 😉",
+"Я же знаю правильный ответ 😌",
+"Хитренький 😄",
+"Почти поверила 😏"
+];
+
+// 💫 Флирт + лёгкий юмор
+const questions = [
+{ text: "Если бы мы встретились случайно, ты бы… 😏", answers: ["Подошёл познакомиться 😉", "Сделал вид, что не заметил 😅"] },
+{ text: "Ты умеешь красиво улыбаться? 😄", answers: ["Конечно, особенно иногда 😌", "Только по праздникам 😆"] },
+{ text: "Если я предложу кофе, ты… ☕", answers: ["Соглашусь без раздумий 😏", "Спрошу: а что за повод? 😄"] },
+{ text: "Ты вообще любишь неожиданные знакомства? 👀", answers: ["Иногда это самое интересное 😌", "Зависит от настроения 😅"] },
+{ text: "Скажи честно: ты любишь лёгкий флирт? 😏", answers: ["Кто ж его не любит 😄", "Я серьёзный человек 😆"] },
+{ text: "Если разговор зашёл слишком легко, это…", answers: ["Хороший знак 😉", "Подозрительно 😅"] },
+{ text: "Ты больше про спонтанность или план? 🤔", answers: ["Спонтанность — наше всё 😎", "Люблю порядок 😌"] },
+{ text: "Если станет весело, ты…", answers: ["Поддержишь атмосферу 😄", "Будешь наблюдать 😏"] },
+{ text: "Тебя легко рассмешить? 😄", answers: ["Если постараться — да 😌", "Я сложный зритель 😆"] },
+{ text: "И последний вопрос… ты бы повторил такой тест ещё раз? 😏", answers: ["С тобой — почему бы и нет 😉", "Посмотрим 😄"] }
+];
+
+let currentQuestion = 0;
+const questionEl = document.getElementById("question");
+const buttonsEl = document.getElementById("buttons");
+
+function changeBackground() {
+    document.body.style.background = 
+        `url("${backgrounds[currentQuestion]}") center/contain no-repeat fixed`;
+}
+
+function startGame() {
+    document.getElementById("startScreen").style.display = "none";
+    document.getElementById("game").style.display = "block";
+    changeBackground();
+    showQuestion();
+}
+
+function showQuestion() {
+    buttonsEl.innerHTML = "";
+    questionEl.style.animation = "none";
+    void questionEl.offsetWidth;
+    questionEl.style.animation = "slideIn 0.8s ease";
+    questionEl.innerText = questions[currentQuestion].text;
+
+    questions[currentQuestion].answers.forEach((answer, index) => {
+        const btn = document.createElement("button");
+        btn.innerText = answer;
+
+        if (index === 0) {
+            btn.classList.add("correct");
+            btn.onclick = nextQuestion;
+        } else {
+            btn.classList.add("wrong");
+            btn.onmouseover = () => {
+                const x = Math.random() * (window.innerWidth - 150);
+                const y = Math.random() * (window.innerHeight - 50);
+                btn.style.position = "absolute";
+                btn.style.left = x + "px";
+                btn.style.top = y + "px";
+                btn.innerText = funnyPhrases[Math.floor(Math.random() * funnyPhrases.length)];
+            };
+        }
+
+        buttonsEl.appendChild(btn);
+    });
+}
+
+function nextQuestion() {
+    currentQuestion++;
+    if (currentQuestion < questions.length) {
+        changeBackground();
+        showQuestion();
+    } else {
+        showFinal();
+    }
+}
+
+function showFinal() {
+    questionEl.innerHTML = "";
+    buttonsEl.innerHTML = "";
+
+    const finalText = document.createElement("div");
+    finalText.classList.add("final-text");
+    finalText.innerHTML = "Ну всё 😌<br>Ты прошёл тест... и, кажется, справился довольно неплохо 😉";
+    document.getElementById("game").appendChild(finalText);
+}
+</script>
+
+</body>
+</html>
