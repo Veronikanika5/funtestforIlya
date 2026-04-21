@@ -14,9 +14,10 @@ body {
     align-items: center;
     flex-direction: column;
     font-family: 'Comic Sans MS', cursive;
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
+
+    /* ❌ убраны картинки */
+    background: #1a1a1a;
+
     transition: background 0.8s ease-in-out;
 }
 
@@ -112,7 +113,6 @@ button:hover {
 
 <script>
 
-
 const funnyPhrases = [
 "Не туда 😏",
 "Попробуй ещё 😉",
@@ -137,20 +137,15 @@ const funnyPhrases = [
 ];
 
 const questions = [
-{ text: "Если я была бы сейчас рядом… что бы ты сделал? 😏", answers: ["Стал бы ближе 😉", "Пристал и сорвал бы с тебя одежду😄"] },
+{ text: "Если я была бы сейчас рядом… что бы ты сделал? 😏", answers: ["Стал бы ближе 😉", "Пристал бы и сорвал с тебя одежду 😄"] },
 { text: "Ты любишь, когда между людьми есть искра? ⚡", answers: ["Очень 😏", "Я спокойный 😄"] },
 { text: "Что интереснее: слова или взгляд? 👀", answers: ["Взгляд… 😏", "Слова 😄"] },
 { text: "Ты умеешь делать первый шаг? 😉", answers: ["Иногда да 😌", "Жду знака 😄"] },
 { text: "Если становится немного неловко…", answers: ["Это даже интересно 😏", "Я отступаю 😄"] },
 { text: "Ты веришь в «не случайные» знакомства? 💫", answers: ["Да 😌", "Иногда 😄"] },
-{ text: "Если я немного флиртую…", answers: ["Я тебя понял 😉", "Сделаю вид что не понял 😄"] },
-{ text: "Ты больше про игру или серьёзность? 🎭", answers: ["Люблю игру 😏", "Я серьёзный 😄"] },
+{ text: "Если я немного флиртую…", answers: ["Я понял 😉", "Сделаю вид что не понял 😄"] },
+{ text: "Ты больше про игру или серьёзность? 🎭", answers: ["Игра 😏", "Серьёзность 😄"] },
 { text: "Ты умеешь удивлять? 😌", answers: ["Да 😉", "Стараюсь 😄"] },
-{ text: "Если станет интересно…", answers: ["Я продолжу 😏", "Посмотрю 😄"] },
-{ text: "Ты любишь риск? 😏", answers: ["Иногда 😌", "Не очень 😄"] },
-{ text: "Что сильнее цепляет? 😌", answers: ["Атмосфера 😏", "Слова 😄"] },
-{ text: "Ты бы захотел узнать меня лучше? 👀", answers: ["Да 😉", "Возможно 😄"] },
-{ text: "Если я скажу «мне с тобой интересно»…", answers: ["Я продолжу 😏", "Улыбнусь 😄"] },
 { text: "И последний вопрос… ты чувствуешь это? 😏", answers: ["Да… 😉", "Может быть 😄"] }
 ];
 
@@ -164,14 +159,8 @@ document.getElementById("game").style.display="block";
 next();
 }
 
-function bg(){
-document.body.style.background =
-`url("${backgrounds[currentQuestion % backgrounds.length]}") center/cover no-repeat`;
-}
-
 function next(){
 if(currentQuestion < questions.length){
-bg();
 show();
 }else{
 final();
@@ -209,9 +198,6 @@ b.appendChild(btn);
 function final(){
 q.innerHTML="";
 b.innerHTML="";
-
-document.body.style.background =
-`url("https://media.tenor.com/3o6Zt481isNVuQI1l6AAAAM/stars.gif") center/cover no-repeat`;
 
 const wrap = document.createElement("div");
 wrap.className="final-text";
