@@ -14,10 +14,7 @@ body {
     align-items: center;
     flex-direction: column;
     font-family: 'Comic Sans MS', cursive;
-
-    /* ❌ убраны картинки */
     background: #1a1a1a;
-
     transition: background 0.8s ease-in-out;
 }
 
@@ -114,26 +111,8 @@ button:hover {
 <script>
 
 const funnyPhrases = [
-"Не туда 😏",
-"Попробуй ещё 😉",
-"Я запомню это 😌",
-"Ммм, мимо 😄",
-"Ты рискуешь 😏",
-"Почти 😄",
-"Серьёзно? 😏",
-"Хитрый ход 😌",
-"Не угадал 😜",
-"Я ожидала другого 😉",
-"Ещё шанс 😏",
-"Ну-ну 😄",
-"Ты меня проверяешь? 😏",
-"Я же вижу 😌",
-"Не прокатило 😉",
-"Ты специально? 😄",
-"Я так и думала 😏",
-"Мило, но нет 😌",
-"Почти убедил 😄",
-"Хорошая попытка 😉"
+"Не туда 😏","Попробуй ещё 😉","Я запомню это 😌","Мимо 😄","Почти 😏",
+"Серьёзно? 😏","Хитрый ход 😌","Не угадал 😜","Ещё шанс 😏","Ну-ну 😄"
 ];
 
 const questions = [
@@ -156,7 +135,10 @@ const b = document.getElementById("buttons");
 function startGame(){
 document.getElementById("startScreen").style.display="none";
 document.getElementById("game").style.display="block";
-next();
+
+currentQuestion = 0; // ✅ фикс
+
+setTimeout(()=>next(),100);
 }
 
 function next(){
@@ -185,8 +167,8 @@ next();
 btn.className="wrong";
 btn.onmouseover=()=>{
 btn.style.position="absolute";
-btn.style.left=Math.random()*80+"%";
-btn.style.top=Math.random()*80+"%";
+btn.style.left=Math.random()*70+"%";
+btn.style.top=Math.random()*70+"%";
 btn.innerText = funnyPhrases[Math.floor(Math.random()*funnyPhrases.length)];
 };
 }
