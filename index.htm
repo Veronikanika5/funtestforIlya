@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>Небольшая игра для Ильи</title>
+<title>Игра для Ильи</title>
 
 <style>
 body {
@@ -24,8 +24,7 @@ body::before {
     content: "";
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.3);
-    pointer-events: none;
+    background: rgba(0,0,0,0.35);
     z-index: 0;
 }
 
@@ -36,6 +35,7 @@ body::before {
     text-align: center;
     box-shadow: 0 0 30px rgba(0,0,0,0.2);
     z-index: 1;
+    max-width: 500px;
 }
 
 h1 {
@@ -43,12 +43,12 @@ h1 {
 }
 
 button {
-    padding: 15px 30px;
-    font-size: 18px;
+    padding: 14px 25px;
+    font-size: 17px;
     border: none;
     border-radius: 30px;
     cursor: pointer;
-    margin: 10px;
+    margin: 8px;
     transition: 0.3s;
 }
 
@@ -67,15 +67,12 @@ button:hover {
     transform: scale(1.1);
 }
 
-#game {
-    display: none;
-}
+#game { display: none; }
 
 .final-text {
     color: #ff4d6d;
-    font-size: 34px;
+    font-size: 28px;
     font-weight: bold;
-    text-shadow: 0 0 15px #fff;
 }
 
 .heart {
@@ -88,6 +85,12 @@ button:hover {
     0% { transform: translateY(0); opacity: 1;}
     100% { transform: translateY(-100vh); opacity: 0;}
 }
+
+.typing {
+    font-size: 20px;
+    color: #555;
+    margin-top: 15px;
+}
 </style>
 </head>
 
@@ -95,7 +98,7 @@ button:hover {
 
 <div id="startScreen" class="overlay">
     <h1>Илья… у меня для тебя кое-что есть 😏</h1>
-    <button onclick="startGame()">Заинтриговала 👀</button>
+    <button onclick="startGame()">Открыть 👀</button>
 </div>
 
 <div id="game" class="overlay">
@@ -104,53 +107,48 @@ button:hover {
 </div>
 
 <script>
+
+// 🔥 стабильные гифки
 const backgrounds = [
-"https://media.giphy.com/media/3o7aD2saalBwwftBIY/giphy.gif",
-"https://media.giphy.com/media/l0HlBO7eyXzSZkJri/giphy.gif",
-"https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif",
-"https://media.giphy.com/media/26ufdipQqU2lhNA4g/giphy.gif",
-"https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif",
-"https://media.giphy.com/media/3o6Zt481isNVuQI1l6/giphy.gif",
-"https://media.giphy.com/media/xT0xeJpnrWC4XWblEk/giphy.gif",
-"https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif",
-"https://media.giphy.com/media/26xBvQa5dyU3ADkJ6/giphy.gif",
-"https://media.giphy.com/media/l4FGuhL4U2WyjdkaY/giphy.gif",
-"https://media.giphy.com/media/3o7btPCcdNniyf0ArS/giphy.gif",
-"https://media.giphy.com/media/3o6ZtaO9BZHcOjmErm/giphy.gif",
-"https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif",
-"https://media.giphy.com/media/26FPJGjhefSJuaRhu/giphy.gif",
-"https://media.giphy.com/media/3oEdv4hwWTpx6Yz1Ac/giphy.gif"
+"https://media.tenor.com/7cAOc2fKOcEAAAAC/adventure-time.gif",
+"https://media.tenor.com/dStJVtPNiTUAAAAC/adventuretime-jake.gif",
+"https://media.tenor.com/1snEvE1Gv-IAAAAC/bailar-jake.gif",
+"https://media.tenor.com/XXp0jOxwfD8AAAAC/jake-scream.gif",
+"https://media.tenor.com/be3be2f37708b90e41357c79d395dea8/tenor.gif",
+"https://media.tenor.com/JIX9t2j0ZTN9SAAAAC/cat.gif",
+"https://media.tenor.com/l0HlBO7eyXzSZkJriAAAAC/funny.gif",
+"https://media.tenor.com/26xBvQa5dyU3ADkJ6AAAAC/dance.gif",
+"https://media.tenor.com/l4FGuhL4U2WyjdkaYAAAAC/cute.gif",
+"https://media.tenor.com/xT0xeJpnrWC4XWblEkAAAAC/wtf.gif",
+"https://media.tenor.com/3oEjI6SIIHBdRxXI40AAAAC/laugh.gif",
+"https://media.tenor.com/26FPJGjhefSJuaRhuAAAAC/dog.gif",
+"https://media.tenor.com/l0MYt5jPR6QX5pnqMAAAAC/meme.gif",
+"https://media.tenor.com/3oEdv4hwWTpx6Yz1AcAAAAC/lol.gif",
+"https://media.tenor.com/3o6Zt481isNVuQI1l6AAAAC/cute.gif"
 ];
 
 const funnyPhrases = [
-"Не туда 😏",
-"Ммм, мимо 😄",
-"Ты рискуешь 😌",
-"Попробуй ещё 😉",
-"Я запомню это 😏",
-"Серьёзно? 😄",
-"Хитрый ход 😏",
-"Не угадал 😜",
-"Я ожидала другого 😌",
-"Ещё шанс 😉"
+"Не туда 😏","Попробуй ещё 😉","Я запомню это 😌",
+"Ммм, нет 😄","Ты рискуешь 😏","Почти 😄"
 ];
 
+// 💘 интрига + флирт
 const questions = [
-{ text: "Если я посмотрю на тебя слишком долго… ты что сделаешь? 😏", answers: ["Посмотрю в ответ 😉", "Сделаю вид, что не заметил 😅"] },
-{ text: "Ты любишь немного напряжения между людьми? 👀", answers: ["Да, это интересно 😏", "Я за спокойствие 😄"] },
-{ text: "Если мы окажемся вдвоём вечером… 🤫", answers: ["Будет весело 😉", "Посидим спокойно 😌"] },
-{ text: "Ты больше про действия или намёки? 😏", answers: ["Намёки — это искусство 😌", "Сразу к делу 😄"] },
-{ text: "Ты умеешь сводить с ума взглядом? 👀", answers: ["Иногда получается 😏", "Я скромный 😄"] },
-{ text: "Что интереснее: разговор или пауза между словами? 🤫", answers: ["Пауза… 😏", "Разговор 😄"] },
-{ text: "Если я скажу «мне интересно с тобой»…", answers: ["Я продолжу 😉", "Сделаю вид, что не понял 😄"] },
-{ text: "Ты любишь лёгкую провокацию? 😏", answers: ["Очень 😌", "Я осторожный 😄"] },
-{ text: "Если станет слишком весело…", answers: ["Я не остановлюсь 😏", "Сбавлю темп 😄"] },
-{ text: "Ты умеешь удивлять? 🎭", answers: ["Конечно 😉", "Иногда 😄"] },
-{ text: "Ты бы рискнул познакомиться ближе? 😏", answers: ["Да 😌", "Посмотрим 😄"] },
-{ text: "Что сильнее цепляет: улыбка или взгляд? 👀", answers: ["Взгляд 😏", "Улыбка 😄"] },
-{ text: "Ты веришь в случайные совпадения? 😉", answers: ["Нет, это судьба 😏", "Иногда 😄"] },
-{ text: "Если всё зайдёт слишком далеко…", answers: ["Посмотрим куда 😉", "Остановлюсь 😄"] },
-{ text: "И честно… тебе сейчас интересно? 😏", answers: ["Да, очень 😉", "Ну… немного 😄"] }
+{ text: "Если я сейчас рядом… ты бы что сделал? 😏", answers: ["Стал бы ближе 😉", "Сделал вид, что занят 😄"] },
+{ text: "Ты любишь, когда между людьми есть искра? ⚡", answers: ["Очень 😏", "Я спокойный 😄"] },
+{ text: "Что интереснее: слова или взгляд? 👀", answers: ["Взгляд… 😏", "Слова 😄"] },
+{ text: "Ты умеешь делать первый шаг? 😉", answers: ["Иногда да 😌", "Жду знака 😄"] },
+{ text: "Если становится немного неловко…", answers: ["Это даже интересно 😏", "Я отступаю 😄"] },
+{ text: "Ты веришь в «не случайные» знакомства? 💫", answers: ["Да 😌", "Иногда 😄"] },
+{ text: "Если я немного флиртую…", answers: ["Я отвечу 😉", "Сделаю вид что не понял 😄"] },
+{ text: "Ты больше про игру или серьёзность? 🎭", answers: ["Люблю игру 😏", "Я серьёзный 😄"] },
+{ text: "Ты умеешь удивлять? 😌", answers: ["Да 😉", "Стараюсь 😄"] },
+{ text: "Если станет интересно…", answers: ["Я продолжу 😏", "Посмотрю 😄"] },
+{ text: "Ты любишь риск? 😏", answers: ["Иногда 😌", "Не очень 😄"] },
+{ text: "Что сильнее цепляет? 😌", answers: ["Атмосфера 😏", "Слова 😄"] },
+{ text: "Ты бы захотел узнать меня лучше? 👀", answers: ["Да 😉", "Возможно 😄"] },
+{ text: "Если я скажу «мне с тобой интересно»…", answers: ["Я продолжу 😏", "Улыбнусь 😄"] },
+{ text: "И последний вопрос… ты чувствуешь это? 😏", answers: ["Да… 😉", "Может быть 😄"] }
 ];
 
 let currentQuestion = 0;
@@ -158,8 +156,8 @@ const questionEl = document.getElementById("question");
 const buttonsEl = document.getElementById("buttons");
 
 function changeBackground() {
-    document.body.style.background = 
-        `url("${backgrounds[currentQuestion]}") center/contain no-repeat fixed`;
+    document.body.style.background =
+    `url("${backgrounds[currentQuestion]}") center/contain no-repeat fixed`;
 }
 
 function startGame() {
@@ -183,12 +181,10 @@ function showQuestion() {
         } else {
             btn.classList.add("wrong");
             btn.onmouseover = () => {
-                const x = Math.random() * (window.innerWidth - 150);
-                const y = Math.random() * (window.innerHeight - 50);
                 btn.style.position = "absolute";
-                btn.style.left = x + "px";
-                btn.style.top = y + "px";
-                btn.innerText = funnyPhrases[Math.floor(Math.random() * funnyPhrases.length)];
+                btn.style.left = Math.random()*80 + "%";
+                btn.style.top = Math.random()*80 + "%";
+                btn.innerText = funnyPhrases[Math.floor(Math.random()*funnyPhrases.length)];
             };
         }
 
@@ -206,7 +202,7 @@ function nextQuestion() {
     }
 }
 
-<script>
+// 💥 ФИНАЛ
 function showFinal() {
     questionEl.innerHTML = "";
     buttonsEl.innerHTML = "";
@@ -215,29 +211,34 @@ function showFinal() {
     finalText.classList.add("final-text");
 
     finalText.innerHTML = `
-    Илья… 💫<br><br>
-    Кажется, ты только что прошёл не просто тест 😏<br><br>
-    Теперь у меня к тебе маленький вопрос...<br><br>
-    <b>ты напишешь мне первым или мне продолжить эту игру? 😉</b>
+    Илья… 💘<br><br>
+    Кажется, это было не просто так 😏<br><br>
+    <b>Напишешь мне первым… или мне продолжить? 😉</b>
+    <br><br>
+    <button onclick="goToChat()">Написать мне 💬</button>
+    <div class="typing">печатает сообщение…</div>
     `;
 
     document.getElementById("game").appendChild(finalText);
 
-    // 💖 красивые сердечки
+    // 💖 анимация
     for (let i = 0; i < 100; i++) {
         const heart = document.createElement("div");
         heart.classList.add("heart");
-        heart.innerHTML = Math.random() > 0.5 ? "💖" : "✨";
-        heart.style.left = Math.random() * 100 + "vw";
-        heart.style.fontSize = (Math.random() * 25 + 15) + "px";
-        heart.style.animationDuration = (Math.random() * 3 + 2) + "s";
+        heart.innerHTML = Math.random()>0.5 ? "💖":"✨";
+        heart.style.left = Math.random()*100 + "vw";
+        heart.style.fontSize = (Math.random()*20+15)+"px";
         document.body.appendChild(heart);
-        setTimeout(() => heart.remove(), 5000);
-    }
-
-    // 🎵 лёгкий "вау" эффект — вибрация (если с телефона)
-    if (navigator.vibrate) {
-        navigator.vibrate([100, 50, 100]);
+        setTimeout(()=>heart.remove(),5000);
     }
 }
+
+// 👉 ВСТАВЬ СЮДА СВОЙ ЮЗЕР
+function goToChat(){
+    window.open("https://t.me/ТВОЙ_НИК","_blank");
+}
+
 </script>
+
+</body>
+</html>
